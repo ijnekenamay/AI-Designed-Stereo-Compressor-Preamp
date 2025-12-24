@@ -9,8 +9,6 @@
 
 # SSI2164 VCA コンプレッサー 製作仕様書
 
----
-
 ## 1. 全体構成図（オーディオ・パス）
 
 本機はモノラル構成の VCA コンプレッサーであり、  
@@ -25,7 +23,6 @@ Input Buffer
 → Blend（Parallel Mix）  
 → Output Buffer  
 
----
 
 ## 2. メイン基板：オーディオ・パス詳細
 
@@ -53,7 +50,6 @@ Input Buffer
   - Pin 9（V−）– GND：0.1µF  
   ※最短距離で配置すること
 
----
 
 ### B. 出力およびゲイン調整部
 
@@ -75,7 +71,6 @@ Input Buffer
 
   ※本段で位相は正相に戻る
 
----
 
 ### C. Blend（Parallel Mix）回路
 
@@ -92,7 +87,6 @@ Input Buffer
   オペアンプによるボルテージフォロワ  
   出力保護抵抗：100Ω（直列）
 
----
 
 ## 3. サイドチェイン・ユニット（制御部）
 
@@ -104,7 +98,6 @@ Input Buffer
 将来的にステレオ化する場合は、L/R 信号を合成した CV を  
 共通で VCA に供給する「ステレオリンク方式」へ拡張可能とする。
 
----
 
 ### A. 検波部（Precision Rectifier）
 
@@ -124,7 +117,6 @@ Input Buffer
 - 想定電圧レンジ  
   - 整流後 DC：0 ～ 約 0.9V（入力レベルに比例）
 
----
 
 ### B. Threshold（スレッショルド）設定
 
@@ -135,7 +127,6 @@ Input Buffer
   - 整流電圧が Threshold を超えた分のみを有効成分とする  
   - Threshold 未満では圧縮動作を行わない（ユニティゲイン）
 
----
 
 ### C. Ratio（圧縮率）制御
 
@@ -156,7 +147,6 @@ Input Buffer
   SSI2164 の制御感度は **−33mV/dB**  
   Ratio は連続可変とする
 
----
 
 ### D. Attack / Release（時定数回路）
 
@@ -172,7 +162,6 @@ Input Buffer
   - Pot：250kΩ（A）  
   - 時定数範囲：約 10ms ～ 10s
 
----
 
 ### E. CV 出力および VCA 駆動
 
@@ -187,7 +176,6 @@ Input Buffer
   - SSI2164 の −33mV/dB 特性に合わせて
     実機でリダクション量を微調整可能とする
 
----
 
 ## 4. 全体信号フロー（俯瞰）
 
@@ -223,10 +211,7 @@ INPUT
 
 ```
 
----
 ## 5. オーディオ・パス回路図
----
-
 ### Input BufferとV/I Converter（SSI2164入力）
 ```text
 (Input Jack)
@@ -275,7 +260,6 @@ INPUT
 - Stability Network：必須
 - Pin1（Mode）：OPEN
 
----
 ### SSI2164 VCA Core
 ```
 [TO_CV_BUFFER_OUT] (From Sidechain)
@@ -307,8 +291,6 @@ INPUT
 ```
 - CV感度：−33mV/dB
 - 未使用CH (3 & 4): Pin 10, 15 (IN) は20kΩ経由でGNDへ。Pin 11, 14 (CV) は直接GNDへ。Pin 12, 13 (OUT) はオープン。
-
----
 
 ### I/V Converter & Make-up Gain (Left)
 ```text
@@ -349,7 +331,6 @@ INPUT
          GND               (Phase Corrected)
 ```
 - ここで位相反転している
----
 
 ### Blend & Output (Left)
 
@@ -383,11 +364,7 @@ INPUT
 - 最大 +20dB
 - 位相が正相に戻る
 
----
-
 ## 6. サイドチェイン回路図
-
----
 
 ### [SC-1] Summing & Rectifier (Full-Wave)
 ```text
@@ -420,8 +397,6 @@ INPUT
                                      ▼
                                 [RECTIFIED_DC]
 ```
----
-
 ### Threshold, Ratio, Timing
 ```text
 [RECTIFIED_DC]
@@ -445,8 +420,6 @@ INPUT
                                          ▼
                                   [TO_ATTACK_REL]
 ```
----
-
 ### Attack / Release & CV Output
 ```text
 [TO_ATTACK_REL]
@@ -482,13 +455,9 @@ INPUT
       [TO_CV_BUFFER_OUT] ◄─┘     └───────┘
        (To VCA Pin 3 & 6)
 ```
----
 ## 7. GRメーター回路
----
-
 ### 構成概要
 - IC: LM3914 (Linear Scale) Mode: Bar Mode (Dot modeの場合はPin9をオープン)─（既存）CV Trim → SSI2164
-
 
 ### LM3914 基本配線
 ```text
@@ -533,8 +502,6 @@ INPUT
 ```
 ※ LEDには直列抵抗不要（LM3914内蔵）
 
----
-
 #### 表示ロジック
 
 SSI2164 の特性 [−33mV = 1dB GR]
@@ -550,7 +517,6 @@ SSI2164 の特性 [−33mV = 1dB GR]
 
 👉赤が点いた瞬間＝「かなり潰してる」
 
-
 #### 表示レベルの校正
 
 1. 1kHz 正弦波入力
@@ -558,5 +524,3 @@ SSI2164 の特性 [−33mV = 1dB GR]
 3. GR = 6dB に設定
 4. LED2 が点灯するよう → LM3914の Scale Adj Trim (Ref電圧) を微調整
 （厳密にやるなら SIG IN に 10kトリマーを入れる）
-
----
