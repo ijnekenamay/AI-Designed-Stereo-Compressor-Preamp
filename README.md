@@ -291,13 +291,14 @@ INPUT
 ```
 - CV感度：−33mV/dB
 - 未使用CH (3 & 4): Pin 10, 15 (IN) は20kΩ経由でGNDへ。Pin 11, 14 (CV) は直接GNDへ。Pin 12, 13 (OUT) はオープン。（以下の通り）
-
+```text
 Pin 10 ──/\/\/\── GND (20k)
 Pin 11 ────────── GND
 Pin 12 ────────── (OPEN)
 Pin 13 ────────── (OPEN)
 Pin 14 ────────── GND
 Pin 15 ──/\/\/\── GND (20k)
+```
 
 ### I/V Converter & Make-up Gain (Left)
 ```text
