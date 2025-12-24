@@ -191,6 +191,7 @@ Input Buffer
 
 ## 4. 全体信号フロー（俯瞰）
 
+```text
 INPUT
  │
  ▼
@@ -220,6 +221,7 @@ INPUT
  │
  OUTPUT
 
+```
 ---
 
 ---
@@ -231,7 +233,7 @@ INPUT
 ---
 
 ### Input Buffer
-
+```text
           IN
            │
            │
@@ -246,7 +248,7 @@ INPUT
            │           │
            └───────────┘
                  GND
-                 
+```
 - 構成：ボルテージフォロワ
 - 出力は
 -- VCA用
@@ -256,7 +258,7 @@ INPUT
 ---
 
 ### V/I Converter（SSI2164入力）
-
+```text
 OP1 OUT
   │
   │   20k
@@ -267,14 +269,14 @@ OP1 OUT
   │          1200p
   │            │
   └────────────┴─────────── GND
-
+```
 - Stability Network：必須
 - Pin1（Mode）：OPEN
 
 ---
 
 ### SSI2164 VCA Core
-
+```
           CV (from sidechain)
                 │
                 ▼
@@ -284,13 +286,13 @@ Pin2 ◄───┤ IN       │
 Pin3 ◄───┤ CV       │
 Pin4 ───►┤ OUT      │
          └─────────┘
-
+```
 - CV感度：−33mV/dB
 
 ---
 
 ### I/V Converter
-
+```text
 SSI2164 Pin4
       │
       ▼
@@ -308,14 +310,13 @@ SSI2164 Pin4
                     47p
                       │
                       └─────── OP2 OUT
-
-
+```
 - 位相反転（後段で戻す）
 
 ---
 
 ### Make-up Gain
-
+```text
 OP2 OUT
   │
   │ 10k
@@ -331,14 +332,14 @@ OP2 OUT
   │
   └─/\/\/\─/\/\/\─┘
     10k     100k(B)
-
+```
 - 最大 +20dB
 - 位相が正相に戻る
 
 ---
 
 ### Blend（Parallel Mix）
-
+```text
 Dry ──┐
       │
      ┌┴─────┐
@@ -356,7 +357,7 @@ Wet ──┘
      100
       │
     OUTPUT
-
+```
 - 最大 +20dB
 - 位相が正相に戻る
 
@@ -367,7 +368,7 @@ Wet ──┘
 ---
 
 ### サイドチェイン入力 & 整流
-
+```text
 Input Buffer OUT
       │
       │ 47k
@@ -385,11 +386,11 @@ Input Buffer OUT
                  │
                  ▼
               Rectified DC
-
+```
 ---
 
 ### Threshold & Ratio
-
+```text
 Rectified DC
      │
      ├───────────────┐
@@ -401,11 +402,11 @@ Rectified DC
            ▼
         Gain Stage
       (Variable k)
-
+```
 ---
 
 ### Attack / Release
-
+```text
 Gain Stage OUT
       │
       ├─►|──┐  Attack
@@ -423,11 +424,11 @@ Gain Stage OUT
            1M(A)
             │
            GND
-
+```
 ---
 
 ### CV Buffer & Scaling
-
+```text
 A/R OUT
    │
    ▼
@@ -439,7 +440,7 @@ A/R OUT
    │
    ▼
 SSI2164 Pin3
-
+```
 ---
 
 ## 7. GRメーター回路
@@ -451,17 +452,17 @@ SSI2164 Pin3
 ---
 
 #### 構成概要
-
+```text
 CV Buffer OUT
      │
      ├─── 100k ───► LM3915 SIG IN
      │
      └───（既存）CV Trim → SSI2164
-
+```
 ---
 
 #### 回路への組み込み位置
-
+```text
            ┌─────────────┐
            │ Attack/Rel. │
            └─────┬───────┘
@@ -478,11 +479,11 @@ CV Buffer OUT
    └─────┬─────┘    └───────────┘
          │
  SSI2164 Pin3
-
+```
 ---
 
 #### LM3915 基本配線
-
+```text
                 +V (例: +12V)
                   │
                  1k8
@@ -500,7 +501,7 @@ CV Buffer OUT
       │
       ▼
 SIG IN (Pin5)
-
+```
 MODE (Pin9) ── GND     ← Dot mode
            or +V       ← Bar mode
 
