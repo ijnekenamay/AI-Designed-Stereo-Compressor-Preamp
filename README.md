@@ -511,7 +511,7 @@ LとRの信号を混ぜて、検波（プラスのDCに変換）する段階で�
       │             │
       │           ┌─▼──┐                Ratio Pot (50k B)
       │           │ +  │              ┌─/\/\/\──┐
-      └───────────┤OP_C│     ┌────────┤   ▲     │
+      └── -入力───┤OP_C│     ┌────────┤   ▲     │
                   │ -  │     │        │   │     │
                   └─┬──┘     │        └───┬─────┘
                     │        │            │
@@ -520,6 +520,18 @@ LとRの信号を混ぜて、検波（プラスのDCに変換）する段階で�
                                           ▼
                                   [TO_ST_LINK_TIMING]
 ```
+- Threshold Pot
+  - 1番 → +V（例：+15V or +12V）
+  - 3番 → GND
+  - 2番 → OP_C の +入力（非反転入力）
+- OP_C の基本動作
+  - +入力：Threshold 電圧（+15Vをpotで調整）
+  - −入力：RECTIFIED_DC（音量）
+- Threshold Pot
+  - 1番 → OP_C 出力
+  - 3番 → OP_C の−入力
+  - 2番 → OP_C の−入力（可変帰還抵抗）
+
 ### [SC-3] Stereo Link, Timing & CV Output (反転バッファ統合)
 ```text
 [TO_ST_LINK_TIMING] (From Ratio Out)
@@ -529,37 +541,59 @@ LとRの信号を混ぜて、検波（プラスのDCに変換）する段階で�
       ├───────►|───────┬───/\/\/\────┐  (D_atk & Attack Pot)
       │     D_atk      │   Atk_Pot   │
       │                │  (2連/Dual) │
-      │                └────────────┤
-      │                             │  [Point X]
-      ├───────/\/\/\────────────────┤  (Release Pot 2連/Dual)
-      │       Rel_Pot               │
-      │                             ├──────┬──────→ [TO_METER_IN]
-      │                             │      │        (0V ~ プラス電圧)
-      │                           ──┴──    │
-      │                           ──┬──    │
+      │                └─────────────┤
+      │                              │  [Point X]
+      ├───────/\/\/\─────────────────┤ (Release Pot 2連/Dual)
+      │       Rel_Pot                │
+      │                              ├─────┬──────→ [TO_METER_IN]
+      │                              │     │        (0V ~ プラス電圧)
+      │                            ──┴──   │
+      │                            ──┬──   │
       │                           C_time   │
       │                            10uF    │
       │                             │      │
       │                            GND     │
       │                                    │
       └────────────────────────────────────┘
-                                           │
-      [[ CV Buffer Section: Inverting Amp ]]
-      (SSI2164を駆動するためにプラスをマイナスに反転)
-                                           │
-                 R_fb (10k)                │
-             ┌──/\/\/\/\──┐                │
-             │            │          R_in  │
-             │   ┌────┐   │        ┌─/\/\/\┘
-             └───┤ -  │   │        │
-                 │OP_D├─┬─┴──┬─────┴─ [CV_Trim_L (10k)] ──► [VCA Pin 3]
-      GND ───────┤ +  │ │    │
-                 └────┘ │    └─────── [CV_Trim_R (10k)] ──► [VCA Pin 6]
-                        │
-                        └─ (Stereo Link Sync Point)
+      │
+      │
+      │ [[ CV Buffer Section: Inverting Amp ]]
+      │
+      │          R_fb (10k)
+      │      ┌──/\/\/\/\───┐
+      │      │          OP_D 出力
+R_in (10k)   │   ┌────┐   
+       └─────────┤ -  │(13)(IC3 Pin 13)
+                 │OP_D│
+          GND ───┤ +  │(12)(IC3 Pin 12)
+                 │ Out│(14)(IC3 Pin 14)
+                 └────┘    
+                           
+                             OP_D 出力
+                                 │
+                                 ├──── [CV_Trim_L (10k)] ──→ [VCA Pin 3 (L)]
+                                 │
+                                 └──── [CV_Trim_R (10k)] ──→ [VCA Pin 6 (R)]
 ```
 - ステレオリンク: 左右の検波信号が OP_A でサミングされ、1つの C_time（タイミング用コンデンサ）を共有して1つの OP_D（CVバッファ）から左右のVCAへ送られるため、完璧に同期します。
-
+- D_atk(1N4148)
+  - アノード：入力側
+  - Attack Pot 側
+- Attack Pot & Release Dual Potの接続
+  - A 3番：D_atk の後段（入力側）
+  - A 2番：Point X（C_time ノード）
+  - A 1番：Point X（C_time ノード）
+  - R 3番：D_atk の前段（＝Ratio 側の出力ノード）
+  - R 2番：Point X（C_time ノード）
+  - R 1番：Point X（C_time ノード）
+- OP_Dの接続
+  - 非反転入力（＋）：GND
+  - 反転入力（−）：
+    - Point X（C_time ノード）からR_inを通して-入力に入れる
+    - OP_Dの出力はR_fb (10k)を通して-入力に入れる
+  - OP_D 出力
+    - それぞれ10kトリムを通してVCA ICへ
+    
 ## 7. GRメーター回路
 ### 構成概要
 - IC: LM3914 (Linear Scale) Mode: Bar Mode (Dot modeの場合はPin9をオープン)─（既存）CV Trim → SSI2164
@@ -576,7 +610,7 @@ LとRの信号を混ぜて、検波（プラスのDCに変換）する段階で�
                               ▼
                         (Pin 5: SIG)
                 ┌───────────────────────────┐
- (+12V/15V) ────┤ Pin 3: V+                 │
+ (+15V) ────────┤ Pin 3: V+                 │
                 │                           │
                 │         LM3914            │
                 │                           │
