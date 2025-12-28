@@ -22,7 +22,7 @@
 	)
 	(rectangle
 		(start 25.4 148.59)
-		(end 170.18 185.42)
+		(end 91.44 185.42)
 		(stroke
 			(width 1)
 			(type solid)
@@ -111,7 +111,7 @@
 		)
 	)
 	(sheet
-		(at 41.91 158.75)
+		(at 44.45 158.75)
 		(size 25.4 17.78)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -125,8 +125,8 @@
 			(color 0 0 0 0.0000)
 		)
 		(uuid "0b4d4bfd-31c8-4c19-84f1-17153586bb4a")
-		(property "Sheetname" "Sidechain 1 - Summing & Rectifier"
-			(at 29.972 156.972 0)
+		(property "Sheetname" "Sidechain"
+			(at 48.514 156.718 0)
 			(effects
 				(font
 					(size 2 2)
@@ -137,7 +137,7 @@
 			)
 		)
 		(property "Sheetfile" "sidechain1.kicad_sch"
-			(at 41.148 177.8 0)
+			(at 43.688 177.8 0)
 			(effects
 				(font
 					(size 1.27 1.27)
