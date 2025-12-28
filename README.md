@@ -562,6 +562,18 @@ Point X ────→ OP_M Pin 12 (+入力)
                 GND                         GND
 ```
 ※ LEDには直列抵抗不要（LM3914内蔵）
+- Pin 1 (LED1) 〜 Pin 10 (LED10):
+  - 各LEDのカソード (K) を接続。
+    - 各LEDのアノード (A) はまとめて電源（+15V）に接続。
+    - Pin 2 (V- / GND):GND に接続。
+    - Pin 3 (V+):+15Vに接続。
+    - Pin 4 (RLO):GND に接続。
+    - Pin 5 (SIG):バッファからの LM3914_Pin5 を接続。
+    - Pin 6 (RHI):Scale_Adjust_Trim の 2番端子 (Wiper) を接続。
+    - これで「全点灯する電圧」を調整可能になります。
+    - Pin 7 (REFOUT):Scale_Adjust_Trim の1番端子に接続。
+    - Pin 8 (REFADJ):GND に接続。
+    - Pin 9 (MODE):バー表示にしたい場合: Pin 3 (V+) に接続。ドット表示（1点のみ）にしたい場合: オープン（未接続）。
 
 #### 表示ロジック
 
