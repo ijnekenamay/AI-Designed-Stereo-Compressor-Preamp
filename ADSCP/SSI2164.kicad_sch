@@ -883,29 +883,29 @@
 	)
 	(global_label "-15V"
 		(shape input)
-		(at 129.54 114.3 270)
+		(at 129.54 114.3 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right)
+			(justify left)
 		)
 		(uuid "28349c20-05b0-4852-89c5-49bce39c686b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 129.54 122.3652 90)
+			(at 137.6052 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify right)
+				(justify left)
 				(hide yes)
 			)
 		)
 	)
 	(global_label "+15V"
 		(shape input)
-		(at 129.54 57.15 90)
+		(at 129.54 57.15 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -915,7 +915,7 @@
 		)
 		(uuid "412e68f0-8d7f-413c-b466-237475daab9f")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 129.54 49.0848 90)
+			(at 137.6052 57.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1182,10 +1182,9 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "3f8e241e-b1cf-42b3-bc48-cb07816569eb")
 		(property "Reference" "C5"
-			(at 125.73 53.34 90)
+			(at 125.73 54.864 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1193,7 +1192,7 @@
 			)
 		)
 		(property "Value" "0.1uF"
-			(at 125.73 55.88 90)
+			(at 125.73 57.404 90)
 			(effects
 				(font
 					(size 1.27 1.27)

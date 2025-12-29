@@ -9,6 +9,18 @@
 	)
 	(lib_symbols)
 	(rectangle
+		(start 217.17 93.98)
+		(end 276.86 130.81)
+		(stroke
+			(width 1)
+			(type solid)
+		)
+		(fill
+			(type none)
+		)
+		(uuid 1c6d731d-1a8b-4de2-8186-f0a58fe3cd58)
+	)
+	(rectangle
 		(start 101.6 148.59)
 		(end 167.64 185.42)
 		(stroke
@@ -43,6 +55,18 @@
 			(type none)
 		)
 		(uuid fdc3c26d-2e5f-410d-99b4-297059345cb0)
+	)
+	(text "Other schematics"
+		(exclude_from_sim no)
+		(at 243.078 89.662 0)
+		(effects
+			(font
+				(size 4 4)
+				(thickness 0.8)
+				(bold yes)
+			)
+		)
+		(uuid "54761646-4f7f-4aa2-b7e5-1ba5bd721eda")
 	)
 	(text "Let's build the ultimate Stereo Compressor / Preamp with the help of generative AI!!!"
 		(exclude_from_sim no)
@@ -216,6 +240,49 @@
 			(project "ADSCP"
 				(path "/132f4570-4169-4ecf-b1f3-d724b5ad1d4e"
 					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 231.14 104.14)
+		(size 30.48 17.78)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "3731e7d7-3933-4242-8d77-75afaff4470d")
+		(property "Sheetname" "Other schematics"
+			(at 232.918 102.616 0)
+			(effects
+				(font
+					(size 2 2)
+					(thickness 0.4)
+					(bold yes)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "other.kicad_sch"
+			(at 231.14 122.5046 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "ADSCP"
+				(path "/132f4570-4169-4ecf-b1f3-d724b5ad1d4e"
+					(page "8")
 				)
 			)
 		)
