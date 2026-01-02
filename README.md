@@ -88,24 +88,20 @@ Input Buffer
 ## 5. オーディオ・パス回路図
 ### Input BufferとV/I Converter（SSI2164入力）
 ![](inputbuffer_and_viconverter.png)
+
 flowchart TD
     IN_JACK["Input Jack L"] --> C1["C1<br/>10uF (Non-polar)"]
     C1 --> BUF_IN["+ Input (U1A)"]
-
     BUF_IN -->|Bias| R1["R1<br/>1MΩ"]
     R1 --> GND["GND"]
-
     subgraph U1A["U1A<br/>TL074 / OPA1644<br/>(Voltage Follower)"]
         BUF_IN --> OP_OUT["Output (Pin1)"]
         OP_OUT --> OP_MINUS["- Input (Pin2)"]
     end
-
     OP_OUT --> BLEND["BLEND_DRY_L"]
     OP_OUT --> SC["SIDECHAIN_L"]
-
     OP_OUT --> R2["R2<br/>20kΩ (1%)"]
     R2 --> VCA_NODE["VCA_IN_L"]
-
     subgraph STAB["Stability Network<br/>(SSI2164 Pin2 near)"]
         VCA_NODE --> R3["R3<br/>220Ω"]
         R3 --> C2["C2<br/>1200pF"]
