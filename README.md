@@ -202,44 +202,43 @@ Pin 15 ──/\/\/\── GND (20k)
 ![](ivconverter_and_makeupgain.png)
 ```mermaid
 flowchart LR
-    %% ========= I/V Converter =========
-    VCA_OUT[VCA_OUT_L_TO_IV]
-    R9[R9 20k]
-    C7[C7 47pF]
+    %% =====================
+    %% I/V Converter (U1B)
+    %% =====================
 
-    VCA_OUT --> R9 --> IV_SUM
-    IV_SUM --> C7 --> U1B_OUT
+    VCA_OUT[VCA_OUT_L_TO_IV] -->|R9 20k| IV_SUM
+    IV_SUM -->|C7 47pF| U1B_OUT
 
-    U1B[U1B<br/>TL074 / OPA1644<br/>I/V Converter]
-    GND1[GND]
+    GND1[GND] --> U1B_PLUS[U1B (+)]
+    IV_SUM --> U1B_MINUS[U1B (-)]
 
-    GND1 -->|+| U1B
-    IV_SUM -->|−| U1B
-    U1B -->|OUT Pin7| U1B_OUT
+    U1B_PLUS --> U1B[U1B TL074/OPA1644]
+    U1B_MINUS --> U1B
+    U1B -->|Pin7| U1B_OUT[U1B OUT]
 
-    %% Feedback
-    U1B_OUT -->|R9 20k (FB)| IV_SUM
+    %% =====================
+    %% Make-up Gain (U1C)
+    %% =====================
 
-    %% ========= Make-up Gain =========
-    R10[R10 10k]
-    U1B_OUT --> R10 --> SUM_NODE
+    U1B_OUT -->|R10 10k| SUM_NODE
 
-    U1C[U1C<br/>TL074 / OPA1644<br/>Make-up Gain]
-    GND2[GND]
+    SUM_NODE --> U1C_MINUS[U1C (-)]
+    GND2[GND] --> U1C_PLUS[U1C (+)]
 
-    GND2 -->|+| U1C
-    SUM_NODE -->|−| U1C
-    U1C -->|OUT Pin8| MAKEUP_OUT[MAKEUP_OUT_L]
+    U1C_PLUS --> U1C[U1C TL074/OPA1644]
+    U1C_MINUS --> U1C
+    U1C -->|Pin8| U1C_OUT[MAKEUP_OUT_L]
 
-    %% ========= Gain Control Feedback =========
-    R11[R11 10k]
-    POT[MakeUpGain Pot<br/>100kB]
+    %% =====================
+    %% Gain Control Feedback
+    %% =====================
 
-    MAKEUP_OUT --> R11 --> POT
-    POT -->|Wiper| SUM_NODE
+    U1C_OUT -->|R11 10k| POT_R[POT 100kB (3)]
+    POT_R --> POT_W[POT Wiper (2)]
+    POT_W --> U1C_MINUS
 
-    %% OPEN terminal (comment)
-    POT_OPEN[Pot (1) OPEN]
+    POT_L[POT (1) OPEN]
+
 ```
 
 - この回路の上段の出力[IV_OUT_L]は**位相が反転し逆相となります。**
