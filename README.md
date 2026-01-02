@@ -87,7 +87,6 @@ Input Buffer
 
 ## 5. オーディオ・パス回路図
 ### Input BufferとV/I Converter（SSI2164入力）
-![](inputbuffer_and_viconverter.png)
 ```mermaid
 flowchart TD
     IN_JACK["Input Jack L"] --> C1["C1<br/>10uF (Non-polar)"]
@@ -122,6 +121,63 @@ flowchart TD
 
 ### SSI2164 VCA Core
 ![](vca_core.png)
+```mermaid
+flowchart LR
+    %% ===== Power =====
+    VPLUS["+15V"] --> C5["C5 0.1uF"]
+    C5 --> U2_PIN16["U2 Pin16 (+V)"]
+    C5 --> GND1["GND"]
+
+    VMINUS["-15V"] --> C6["C6 0.1uF"]
+    C6 --> U2_PIN9["U2 Pin9 (-V)"]
+    C6 --> GND2["GND"]
+
+    %% ===== SSI2164 Core =====
+    subgraph SSI2164["U2 : SSI2164"]
+        U2_PIN2["Pin2 LIN1"]
+        U2_PIN3["Pin3 VC1"]
+        U2_PIN4["Pin4 LOUT1"]
+
+        U2_PIN7["Pin7 LIN2"]
+        U2_PIN6["Pin6 VC2"]
+        U2_PIN5["Pin5 LOUT2"]
+
+        U2_PIN10["Pin10 LIN3"]
+        U2_PIN11["Pin11 VC3"]
+
+        U2_PIN15["Pin15 LIN4"]
+        U2_PIN14["Pin14 VC4"]
+
+        U2_PIN1["Pin1 MODE"]
+        U2_PIN8["Pin8 GND"]
+    end
+
+    %% ===== Audio Inputs =====
+    VCA_IN_L["VCA_IN_L"] --> U2_PIN2
+    CV_IN_L["CV_IN_L"] --> U2_PIN3
+
+    VCA_IN_R["VCA_IN_R"] --> U2_PIN7
+    CV_IN_R["CV_IN_R"] --> U2_PIN6
+
+    %% ===== Audio Outputs =====
+    U2_PIN4 --> VCA_OUT_L["VCA_OUT_L_TO_IV"]
+    U2_PIN5 --> VCA_OUT_R["VCA_OUT_R_TO_IV"]
+
+    %% ===== Unused Channels Termination =====
+    U2_PIN10 --> R8["R8 20k"]
+    R8 --> GND3["GND"]
+
+    U2_PIN15 --> R7["R7 20k"]
+    R7 --> GND4["GND"]
+
+    U2_PIN11 --> GND5["GND"]
+    U2_PIN14 --> GND6["GND"]
+
+    %% ===== Mode & Ground =====
+    U2_PIN1 -. OPEN .- NC1["NC"]
+    U2_PIN8 --> GND7["GND"]
+
+```
 - CV感度：−33mV/dB
 - CV入力 (Pin 3 & 6): ステレオ・リンクさせるため、CV Buffer (OP_D) から来た同じ1本の線を、3番ピンと6番ピンの両方に接続します。
 - 電源 (Pin 16 & 9):
@@ -144,6 +200,37 @@ Pin 15 ──/\/\/\── GND (20k)
 
 ### I/V Converter & Make-up Gain (Left)
 ![](ivconverter_and_makeupgain.png)
+```mermaid
+flowchart LR
+    %% ========= I/V Converter =========
+    VCA_OUT[VCA_OUT_L_TO_IV] -->|R9 20k| N1
+    N1 -->|C7 47pF| N2
+    N2 -->|Feedback| U1B_OUT
+
+    U1B_MINUS[U1B (-)] --> N1
+    GND1[GND] --> U1B_PLUS[U1B (+)]
+    U1B_PLUS --> U1B
+    U1B_MINUS --> U1B
+    U1B -->|Pin7| U1B_OUT[U1B OUT]
+
+    %% ========= Make-up Gain =========
+    U1B_OUT -->|R10 10k| SUM_NODE
+
+    SUM_NODE -->|to (-)| U1C_MINUS
+    GND2[GND] --> U1C_PLUS[U1C (+)]
+
+    U1C_PLUS --> U1C
+    U1C_MINUS --> U1C
+    U1C -->|Pin8| U1C_OUT[MAKEUP_OUT_L]
+
+    %% ========= Gain Control Feedback =========
+    U1C_OUT -->|R11 10k| POT_R[MakeUpGain Pot 100kB (3)]
+    POT_R --> POT_W[Pot Wiper (2)]
+    POT_W --> U1C_MINUS
+
+    POT_L[Pot (1) OPEN]
+```
+
 - この回路の上段の出力[IV_OUT_L]は**位相が反転し逆相となります。**
 - その後後段の回路で出力[MAKEUP_OUT_L]は**再度位相が反転し正相となります。**
 - Pot 1番端子はオープン（未接続）
@@ -160,6 +247,46 @@ Pin 15 ──/\/\/\── GND (20k)
 ### Blend & Output (Left)
 この構成は、Blendポットを回した際のインピーダンス変化を抑え、音量変化を最小限にするプロ仕様の構成です。
 ![](blend_and_output.png)
+```mermaid
+flowchart LR
+
+%% ==== Inputs ====
+BLEND_DRY_L[BLEND_DRY_L]
+MAKEUP_OUT_L[MAKEUP_OUT_L]
+
+%% ==== Resistors before Blend Pot ====
+R15[R15 20k]
+R16[R16 20k]
+
+BLEND_DRY_L --> R15
+MAKEUP_OUT_L --> R16
+
+%% ==== Blend Pot ====
+subgraph BlendPot["Blend Pot 50kB"]
+    P1["Pin1"]
+    P2["Pin2 (Wiper)"]
+    P3["Pin3"]
+end
+
+R15 --> P1
+R16 --> P3
+
+%% ==== OpAmp U1D ====
+subgraph U1D["U1D (TL074 / OPA1644)"]
+    INP["+ (Pin12)"]
+    INN["- (Pin13)"]
+    OUT["Out (Pin14)"]
+end
+
+P2 --> INP
+OUT --> INN
+
+%% ==== Output Stage ====
+R17[R17 100Ω]
+OUT_JACK_L[Output Jack L]
+
+OUT --> R17 --> OUT_JACK_L
+```
 - 最大 +20dB
 - **位相が正相に戻る**
 - （※注1）定数の決定
@@ -182,6 +309,53 @@ Pin 15 ──/\/\/\── GND (20k)
 ### [SC-1] Summing & Rectifier (精密整流・サミング)
 LとRの信号を混ぜて、検波（プラスのDCに変換）する段階です。
 ![](sc1.png)
+```mermaid
+flowchart LR
+
+%% Inputs
+SIDECHAIN_L["SIDECHAIN_L"]
+SIDECHAIN_R["SIDECHAIN_R"]
+
+%% Resistors for summing
+R21["R21 47k"]
+R22["R22 47k"]
+
+%% Summing node
+SUM_NODE((Summing Node))
+
+%% Feedback resistor
+R23["R23 47k"]
+
+%% OpAmp U4A
+U4A["U4A TL074\n(Summing Amp)"]
+
+%% Rectifier stage
+R24["R24 10k"]
+U4B["U4B TL074\n(Precision Rectifier)"]
+
+D1["D1 1N4148"]
+D2["D2 1N4148"]
+R25["R25 10k"]
+
+%% Output
+RECTIFIED_DC["RECTIFIED_DC"]
+
+%% Connections
+SIDECHAIN_L --> R21 --> SUM_NODE
+SIDECHAIN_R --> R22 --> SUM_NODE
+
+SUM_NODE -->|(-)| U4A
+U4A -->|OUT| R24 --> U4B
+
+U4A --> R23 --> SUM_NODE
+U4A --> GND["GND"]
+
+%% Rectifier loop
+U4B -->|OUT| D1 --> RECTIFIED_DC
+U4B -->|OUT| D2 --> R25 --> RECTIFIED_DC
+U4B --> GND
+```
+
 - 1. サミングアンプ (OP_A)合流地点 (Pin 2):
   - LとRの47kΩ抵抗がここで初めて出会います。ここは「仮想接地」と呼ばれ、信号が混ざる重要なポイントです。
   - 帰還抵抗 (R_fb 47k):
@@ -195,6 +369,56 @@ LとRの信号を混ぜて、検波（プラスのDCに変換）する段階で�
 ### [SC-2] Threshold & Ratio (圧縮開始点と比率)
 ここで「どれくらいの音量から、どれくらい潰すか」を決めます。
 ![](sc2.png)
+```mermaid
+graph LR
+    subgraph Input_Stage [入力セクション]
+        J1[Input_Jack_L] --> U1A[Buffer L: TL074]
+        J2[Input_Jack_R] --> U3A[Buffer R: TL074]
+        U1A --> BLEND_DRY_L
+        U1A --> SIDECHAIN_L
+        U3A --> BLEND_DRY_R
+        U3A --> SIDECHAIN_R
+    end
+
+    subgraph Sidechain_Process [サイドチェイン制御系]
+        SIDECHAIN_L & SIDECHAIN_R --> SW2[Deep Punch Switch: HPF]
+        SW2 --> U4AB[SC-1: Summing & Rectifier]
+        U4AB -->|RECTIFIED_DC| U4C[SC-2: Threshold & Ratio]
+        U4C -->|ST_LINK_TIMING| ATK_REL[SC-3: Attack/Release Timing]
+        ATK_REL -->|Point_X| U4D[CV Output Trim]
+        U4D --> CV_IN_L & CV_IN_R
+    end
+
+    subgraph Metering [メーター表示]
+        Point_X --> U5A[Voltage Follower]
+        U5A --> U6[LM3914 LED Driver]
+        U6 --> LEDs[Gain Reduction Meter]
+    end
+
+    subgraph Gain_Cell [VCA & ゲイン・セクション]
+        VCA_IN_L[VCA_IN_L] --> U2[VCA: SSI2164]
+        VCA_IN_R[VCA_IN_R] --> U2
+        CV_IN_L & CV_IN_R --> U2
+        U2 --> U1B_U3B[I/V Converter]
+        U1B_U3B --> U1C_U3C[Makeup Gain]
+        U1C_U3C --> MAKEUP_OUT_L & MAKEUP_OUT_R
+    end
+
+    subgraph Output_Stage [出力 & サチュレーション]
+        MAKEUP_OUT_L & MAKEUP_OUT_R --> SW1[Diode Saturator Switch]
+        SW1 --> BLEND_L_R[Blend Pot: Dry/Wet]
+        BLEND_DRY_L & BLEND_DRY_R --> BLEND_L_R
+        BLEND_L_R --> U1D_U3D[Output Buffer]
+        U1D_U3D --> J3[Output_Jack_L]
+        U1D_U3D --> J4[Output_Jack_R]
+    end
+
+    %% スタイル設定
+    style U2 fill:#f9f,stroke:#333,stroke-width:2px
+    style U6 fill:#bbf,stroke:#333
+    style ATK_REL fill:#dfd,stroke:#333
+```
+
 - Threshold Pot
   - 1番 → +V（+15V）
   - 3番 → GND
@@ -210,6 +434,68 @@ LとRの信号を混ぜて、検波（プラスのDCに変換）する段階で�
 
 ### [SC-3] Stereo Link, Timing & CV Output (反転バッファ統合)
 ![](sc3.png)
+```mermaid
+graph TD
+    subgraph Input_Section [Input & Buffer]
+        InL[Input L] --> BufL[Input Buffer L]
+        InR[Input R] --> BufR[Input Buffer R]
+        BufL --> VCA_InL[VCA Input L]
+        BufR --> VCA_InR[VCA Input R]
+        BufL --> SC_Sum[SC Summing Input]
+        BufR --> SC_Sum[SC Summing Input]
+        BufL --> DryL[Dry Path L]
+        BufR --> DryR[Dry Path R]
+    end
+
+    subgraph Sidechain_Path [Sidechain Control SC-1 to SC-3]
+        SC_Sum --> HPF{Deep Punch SW}
+        HPF --> SC1[SC-1: Summing & Rectifier]
+        SC1 --> SC2[SC-2: Threshold & Ratio]
+        
+        subgraph Controls [SC Controls]
+            Thresh[Threshold Pot] --> SC2
+            Ratio[Ratio Pot] --> SC2
+            Atk[Attack Pot] --> SC3
+            Rel[Release Pot] --> SC3
+        end
+
+        SC2 --> SC3[SC-3: Timing C_time]
+        SC3 --> PointX((Point X))
+        PointX --> CVBuf[OP_D: CV Buffer / Inverter]
+        CVBuf --> CVTrim[CV Trim L/R]
+    end
+
+    subgraph Metering [GR Meter]
+        PointX --> MetBuf[OP_E: Meter Buffer]
+        MetBuf --> LM3914[LM3914 Driver]
+        LM3914 --> LED[LED Bar Graph]
+    end
+
+    subgraph VCA_Core [Audio Path: VCA & Gain]
+        VCA_InL --> VCA[SSI2164 VCA]
+        VCA_InR --> VCA
+        CVTrim -->|Negative CV| VCA
+        VCA --> IV[I/V Converter]
+        IV --> Makeup[Makeup Gain Pot]
+    end
+
+    subgraph Output_Mix [Output & Blend]
+        Makeup --> Saturate{Saturation SW}
+        Saturate --> WetPath[Wet Path]
+        DryL & DryR --> Blend[Blend Pot: Dry/Wet]
+        WetPath --> Blend
+        Blend --> OutBuf[Output Buffer]
+        OutBuf --> Bypass{4PDT Bypass SW}
+        Bypass --> OutL[Output L]
+        Bypass --> OutR[Output R]
+    end
+
+    %% スタイル定義
+    style VCA fill:#f9f,stroke:#333,stroke-width:2px
+    style PointX fill:#fff4dd,stroke:#d4a017,stroke-width:2px
+    style Sidechain_Path fill:#e1f5fe,stroke:#01579b
+    style Metering fill:#f3e5f5,stroke:#4a148c
+```
 - ステレオリンク: 左右の検波信号が OP_A でサミングされ、1つの C_time（タイミング用コンデンサ）を共有して1つの OP_D（CVバッファ）から左右のVCAへ送られるため、完璧に同期します。
 - D_atk(1N4148)
   - アノード：入力側
