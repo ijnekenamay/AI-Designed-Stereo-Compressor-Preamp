@@ -2157,7 +2157,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm"
 			(at 189.23 90.17 0)
 			(effects
 				(font

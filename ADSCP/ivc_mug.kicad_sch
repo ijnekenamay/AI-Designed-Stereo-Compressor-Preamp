@@ -2354,7 +2354,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm"
 			(at 166.37 81.28 0)
 			(effects
 				(font
@@ -2615,7 +2615,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "7dcf9c22-33b1-4256-b3f4-d7cd4bff9a81")
-		(property "Reference" "MakeUpGain_R"
+		(property "Reference" "MakeUpGain_R1"
 			(at 176.53 101.6 90)
 			(effects
 				(font
@@ -2670,7 +2670,7 @@
 		(instances
 			(project "ADSCP"
 				(path "/132f4570-4169-4ecf-b1f3-d724b5ad1d4e/9a0a4327-39a8-4e8b-913c-f35a475a8204"
-					(reference "MakeUpGain_R")
+					(reference "MakeUpGain_R1")
 					(unit 1)
 				)
 			)
@@ -2772,7 +2772,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm"
 			(at 167.64 128.27 0)
 			(effects
 				(font
@@ -3170,7 +3170,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "ea2c58bd-528a-44f8-9827-7550ab160b2e")
-		(property "Reference" "MakeUpGain_L"
+		(property "Reference" "MakeUpGain_L1"
 			(at 111.76 101.6 90)
 			(effects
 				(font
@@ -3225,7 +3225,7 @@
 		(instances
 			(project ""
 				(path "/132f4570-4169-4ecf-b1f3-d724b5ad1d4e/9a0a4327-39a8-4e8b-913c-f35a475a8204"
-					(reference "MakeUpGain_L")
+					(reference "MakeUpGain_L1")
 					(unit 1)
 				)
 			)

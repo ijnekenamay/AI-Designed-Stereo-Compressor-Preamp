@@ -1540,7 +1540,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "15e82e9e-238e-4ab4-bfe9-16fe2f065365")
-		(property "Reference" "Blend_R"
+		(property "Reference" "Blend_R1"
 			(at 115.57 105.41 90)
 			(effects
 				(font
@@ -1595,7 +1595,7 @@
 		(instances
 			(project "ADSCP"
 				(path "/132f4570-4169-4ecf-b1f3-d724b5ad1d4e/47de73ca-0318-4417-b2e7-58ec17641450"
-					(reference "Blend_R")
+					(reference "Blend_R1")
 					(unit 1)
 				)
 			)
@@ -1833,7 +1833,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm"
 			(at 146.05 107.95 0)
 			(effects
 				(font
@@ -2366,7 +2366,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "daac3653-d7ba-49cb-8f56-2ddf505a2860")
-		(property "Reference" "Blend_L"
+		(property "Reference" "Blend_L1"
 			(at 115.57 64.77 90)
 			(effects
 				(font
@@ -2421,7 +2421,7 @@
 		(instances
 			(project "ADSCP"
 				(path "/132f4570-4169-4ecf-b1f3-d724b5ad1d4e/47de73ca-0318-4417-b2e7-58ec17641450"
-					(reference "Blend_L")
+					(reference "Blend_L1")
 					(unit 1)
 				)
 			)

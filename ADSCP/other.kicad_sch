@@ -3046,7 +3046,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm"
 			(at 215.9 129.54 0)
 			(effects
 				(font
@@ -3188,7 +3188,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-14_W7.62mm"
 			(at 190.5 129.54 0)
 			(effects
 				(font
@@ -3679,7 +3679,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "LED_THT:LED_D3.0mm"
 			(at 109.22 50.8 0)
 			(effects
 				(font
@@ -4036,7 +4036,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Package_DIP:DIP-8_W7.62mm"
 			(at 232.41 129.54 0)
 			(effects
 				(font
@@ -4288,7 +4288,7 @@
 				)
 			)
 		)
-		(property "Value" "Deep_Punch_Switch"
+		(property "Value" "Diode Saturator Switch"
 			(at 83.82 144.78 0)
 			(effects
 				(font
